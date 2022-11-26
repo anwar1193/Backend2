@@ -45,8 +45,8 @@ app.use((err, req, res, next) => {
     next()
 })
 
-const host = process.env.DB_HOST;
-const port = process.env.PORT;
-app.listen(port, () => {
-    console.log(`You are running on http://${host}:${port}`)
+const url = process.env.DB_URL;
+// const port = process.env.PORT;
+app.listen(url, () => {
+    console.log(`You are running...`)
 })
