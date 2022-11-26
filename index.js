@@ -45,8 +45,8 @@ app.use((err, req, res, next) => {
     next()
 })
 
-const url = process.env.DB_URL;
-// const port = process.env.PORT;
-app.listen(url, () => {
+// const url = process.env.DB_URL;
+const port = process.env.PORT;
+app.listen(port, () => {
     console.log(`You are running...`)
 })
