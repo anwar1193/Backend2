@@ -115,7 +115,7 @@ CREATE TABLE cart(
     product_id varchar not null,
     qty int not null,
     session_id varchar not null
-)
+);
 
 DROP TABLE products CASCADE;
 
