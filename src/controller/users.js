@@ -2,14 +2,14 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcryptjs');
 const createError = require('http-errors');
 const jwt = require('jsonwebtoken');
-const { findEmail, findFullname, create, update, deleteAccount } = require('../models/users')
+const { findEmail, findFullname, create, update, deleteAccount, createBuy } = require('../models/users')
 const commonHelper = require('../helper/common');
 const authHelper = require('../helper/auth');
 
 const userController = {
     register: async (req, res, next) => {
         try { 
-          const {email, password, fullname, phone, role} = req.body;
+          const {email, password, fullname, phone} = req.body;
 
           const {rowCount} = await findEmail(email)
           // try {
@@ -20,7 +20,7 @@ const userController = {
 
           const salt = bcrypt.genSaltSync(10);
           const passwordHash = bcrypt.hashSync(password, salt);
-
+          const role = "seller";
           const id = uuidv4().toLocaleLowerCase();
           if(rowCount) {
             return next(new createError(403,'Email is already used')) 
@@ -43,6 +43,42 @@ const userController = {
             console.log(error); 
         }
     },
+    registerBuyer: async (req, res, next) => {
+      try { 
+        const {email, password, fullname} = req.body;
+
+        const {rowCount} = await findEmail(email)
+        // try {
+        //   if (checkEmail.rowCount == 1) throw 'Email is already used';
+        // } catch (error) {
+        //   return (commonHelper.response(res, null, 403, error))
+        // }
+
+        const salt = bcrypt.genSaltSync(10);
+        const passwordHash = bcrypt.hashSync(password, salt);
+        const role = "buyer";
+        const id = uuidv4().toLocaleLowerCase();
+        if(rowCount) {
+          return next(new createError(403,'Email is already used')) 
+        } 
+        const data = {
+          id, 
+          email,
+          password:passwordHash,
+          fullname,
+          phone,
+          role
+        }
+        await createBuy(data)
+          .then(
+            result => commonHelper.response(res, result.rows, 201, "Registrasi successfull")
+          )
+          .catch(err => res.send(err))
+
+      }catch(error) {
+          console.log(error); 
+      }
+  },
     login : async (req, res) => {
         try{
             const {email, password} = req.body
