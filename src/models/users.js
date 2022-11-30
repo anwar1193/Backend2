@@ -17,19 +17,6 @@ const findFullname = (fullname) => {
 }
 
 const create = (data) => {
-  const {id, email, password, fullname, phone, role} = data
-  return new Promise ((resolve,reject) => 
-    Pool.query(`INSERT INTO users(id, email, password, fullname, phone, role) VALUES('${id}','${email}','${password}','${fullname}','${phone}','${role}')`,(error,result) => {
-      if(!error){
-        resolve(result)
-      }else{
-        reject(error)
-      }
-    })
-  )
-}
-
-const createBuy = (data) => {
   const {id, email, password, fullname, role} = data
   return new Promise ((resolve,reject) => 
     Pool.query(`INSERT INTO users(id, email, password, fullname, role) VALUES('${id}','${email}','${password}','${fullname}', '${role}')`,(error,result) => {
@@ -43,9 +30,9 @@ const createBuy = (data) => {
 }
 
 const update = (data) => {
-  const {id, email, password, fullname, phone, role} = data 
+  const {id, email, password, fullname, role} = data 
   return new Promise ((resolve, reject) =>
-  Pool.query(`UPDATE users SET email='${email}', password='${password}', fullname='${fullname}', phone='${phone}', role='${role}' WHERE id='${id}'`, (error, result) => {
+  Pool.query(`UPDATE users SET email='${email}', password='${password}', fullname='${fullname}', role='${role}' WHERE id='${id}'`, (error, result) => {
     if(!error){
       resolve(result)
     }else{
@@ -63,6 +50,5 @@ module.exports = {
   findFullname,
   create,
   update,
-  deleteAccount,
-  createBuy
+  deleteAccount
 }

@@ -1,14 +1,17 @@
 CREATE DATABASE database2;
 
 CREATE TABLE seller (
-    id serial primary key,
-    username varchar not null,
+    id VARCHAR primary key,
+    fullname varchar not null,
+    email varchar not null,
+    phone text not null,
     password varchar not null,
     store_name varchar not null,
-    email varchar not null,
-    phone varchar,
-    address_seller text
+    address_seller text,
+    role VARCHAR
 );
+    username varchar not null,
+
 id, username, password, store_name, email, phone, address_seller
 
 {
@@ -78,7 +81,6 @@ create table users(
     email varchar not null, 
     password varchar not null, 
     fullname varchar not null,
-    phone text,
     role VARCHAR
 );
 
