@@ -66,7 +66,6 @@ const userController = {
           email,
           password:passwordHash,
           fullname,
-          phone,
           role
         }
         await createBuy(data)
