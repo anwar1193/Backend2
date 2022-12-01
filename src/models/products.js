@@ -1,23 +1,23 @@
 const Pool = require('../config/db');
 
 const searchKeywordsProduct = (keywords) => {
-    return Pool.query(`SELECT products.id, products.product_name, seller.store_name, products.price, products.size, products.stock, products.photo, categories.category_name, products.product_condition, products.descript
+    return Pool.query(`SELECT products.id, products.product_name, users.store_name, products.price, products.size, products.stock, products.photo, categories.category_name, products.product_condition, products.descript
     FROM products 
     INNER JOIN categories 
     ON products.category_id = categories.id
-    INNER JOIN seller 
-    ON products.seller_id = seller.id WHERE products.id || ' ' || products_name ILIKE $1`, [
+    INNER JOIN users 
+    ON products.seller_id = users.id WHERE products.id || ' ' || products_name ILIKE $1`, [
         `%${keywords}%`,
     ]);
 };
 
 const selectAll = ({limit, offset, sort, sortby, querySearch}) => {
-    return Pool.query(`SELECT products.id, products.product_name, seller.store_name, products.price, products.size, products.stock, products.photo, categories.category_name, products.product_condition, products.descript
+    return Pool.query(`SELECT products.id, products.product_name, users.store_name, products.price, products.size, products.stock, products.photo, categories.category_name, products.product_condition, products.descript
     FROM products 
     INNER JOIN categories 
     ON products.category_id = categories.id
-    INNER JOIN seller 
-    ON products.seller_id = seller.id ${querySearch} ORDER BY ${sortby} ${sort} LIMIT ${limit} OFFSET ${offset}`);
+    INNER JOIN users 
+    ON products.seller_id = users.id ${querySearch} ORDER BY ${sortby} ${sort} LIMIT ${limit} OFFSET ${offset}`);
 }
 
 const selectPaginationTotal = ({ querysearch }) => {
@@ -25,12 +25,12 @@ const selectPaginationTotal = ({ querysearch }) => {
 }
 
 const select = (id) => {
-    return Pool.query(`SELECT products.product_name, seller.store_name, products.price, products.size, products.stock, products.photo, categories.category_name, products.product_condition, products.descript
+    return Pool.query(`SELECT products.product_name, users.store_name, products.price, products.size, products.stock, products.photo, categories.category_name, products.product_condition, products.descript
     FROM products 
     INNER JOIN categories 
     ON products.category_id = categories.id
-    INNER JOIN seller 
-    ON products.seller_id = seller.id WHERE products.id=${id}`);
+    INNER JOIN users 
+    ON products.seller_id = users.id WHERE products.id=${id}`);
 }
 const insert = (product_name, seller_id, price, size, stock, photo, category_id, product_condition, descript) => {
     return Pool.query(`INSERT INTO products (product_name, seller_id, price, size, stock, photo, category_id, product_condition, descript) VALUES ('${product_name}', ${seller_id}, ${price}, '${size}', ${stock}, '${photo}', ${category_id}, '${product_condition}', '${descript}')`);
