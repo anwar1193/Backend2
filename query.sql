@@ -81,6 +81,9 @@ create table users(
     email varchar not null, 
     password varchar not null, 
     fullname varchar not null,
+    phone text,
+    store_name varchar,
+    address_seller text,
     role VARCHAR
 );
 

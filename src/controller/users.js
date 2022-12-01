@@ -2,7 +2,7 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcryptjs');
 const createError = require('http-errors');
 const jwt = require('jsonwebtoken');
-const { findEmail, findFullname, create, update, deleteAccount } = require('../models/users')
+const { findEmail, updateSell, findFullname, createSeller, create, update, deleteAccount } = require('../models/users')
 const commonHelper = require('../helper/common');
 const authHelper = require('../helper/auth');
 
@@ -40,6 +40,35 @@ const userController = {
 
       }catch(error) {
           console.log(error); 
+      }
+    },
+    registerSeller: async (req, res, next) => {
+      try {
+          const {email, password, fullname, store_name, phone} = req.body;
+          const {rowCount} = await findEmail(email)
+          const salt = bcrypt.genSaltSync(10);
+          const passwordHash = bcrypt.hashSync(password, salt);
+          const role = "seller";
+          const id = uuidv4().toLocaleLowerCase();
+          if(rowCount) {
+              return next(new createError(403,'Email is already used')) 
+          } 
+          const data = {
+              id, 
+              email,
+              password:passwordHash,
+              fullname,
+              store_name,
+              phone,
+              role
+            }
+          await createSeller(data)
+          .then(
+              result => commonHelper.response(res, result.rows, 201, "Registrasi successfull")
+          )
+          .catch(err => res.send(err))
+      } catch (error) {
+          console.log(error);
       }
     },
     login : async (req, res) => {
@@ -100,7 +129,10 @@ const userController = {
         try { 
           const id = uuidv4(req.params.id)
           const {email, password, fullname} = req.body;
-          const {rowCount} = await findEmail(email)
+          const {rowCount} = await findEmail(email);
+          if(!rowCount){
+            return next(createError(403,"Email is Not Found"))
+          }
           const salt = bcrypt.genSaltSync(10);
           const passwordHash = bcrypt.hashSync(password, salt);
           await update(id, email, password, fullname);
@@ -108,7 +140,24 @@ const userController = {
         }catch(error) {
             res.send(createError(400)); 
         }
-      }
+      },
+
+      updateSeller: async (req, res) => {
+        try {
+            const id = uuidv4(req.params.id);
+            const {fullname, password, store_name, email, phone, address_seller} = req.body;
+            const {rowCount} = await findEmail(email);
+            if(!rowCount){
+              return next(createError(403,"Email is Not Found"))
+            }
+            const salt = bcrypt.genSaltSync(10);
+            const passwordHash = bcrypt.hashSync(password, salt);
+            await updateSell(id, fullname, password, store_name, email, phone, address_seller);
+            res.status(201).json({message: "Profile Seller updated"});
+        } catch (error) {
+            res.send(createError(400))
+        }
+    },
 }
 
 module.exports = userController
